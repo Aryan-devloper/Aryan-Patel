@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Aryan Dobariya</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@200;300;400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #f5f0e8;
+      --sand: #e8ddd0;
+      --warm: #c8b89a;
+      --muted: #9a8878;
+      --dark: #2a2420;
+      --accent: #8b6f47;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--cream);
+      font-family: 'DM Sans', sans-serif;
+      overflow-x: hidden;
+      cursor: none;
+      color: var(--dark);
+    }
+
+    /* ── Grain ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: -50%;
+      width: 200%; height: 200%;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E");
+      opacity: 0.15;
+      pointer-events: none;
+      z-index: 9000;
+      animation: grain 0.8s steps(1) infinite;
+    }
+    @keyframes grain {
+      0%,100%{transform:translate(0,0)} 10%{transform:translate(-2%,-3%)} 20%{transform:translate(3%,2%)}
+      30%{transform:translate(-1%,4%)} 40%{transform:translate(2%,-1%)} 50%{transform:translate(-3%,3%)}
+      60%{transform:translate(1%,-2%)} 70%{transform:translate(-2%,1%)} 80%{transform:translate(3%,-3%)} 90%{transform:translate(-1%,2%)}
+    }
+
+    /* ── Custom Cursor ── */
+    #cursor {
+      position: fixed; width: 8px; height: 8px;
+      background: var(--dark); border-radius: 50%;
+      pointer-events: none; z-index: 9999;
+      transform: translate(-50%,-50%);
+      transition: transform 0.1s ease, background 0.3s;
+    }
+    #cursor-ring {
+      position: fixed; width: 36px; height: 36px;
+      border: 1px solid var(--dark); border-radius: 50%;
+      pointer-events: none; z-index: 9998;
+      transform: translate(-50%,-50%);
+      transition: width 0.3s ease, height 0.3s ease, opacity 0.3s ease, border-color 0.3s;
+    }
+    #cursor-ring.hover { width: 60px; height: 60px; opacity: 0.4; border-color: var(--accent); }
+    #cursor.hover { background: var(--accent); }
+
+    /* motion arrow removed - using visible site logo instead */
+
+    /* ── Logo: text `AD` with animation ── */
+    .site-logo {
+      position: fixed; top: 18px; left: 18px; z-index: 10001;
+      display: flex; align-items: center; gap: 0.6rem;
+      pointer-events: auto;
+    }
+    .logo-mark {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.2rem, 5.6vw, 3.2rem);
+      font-weight: 400;
+      color: var(--dark);
+      letter-spacing: 0.08em;
+      background: rgba(255,255,255,0.98);
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(0,0,0,0.06);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+      display: inline-block;
+      transform-origin: center;
+      cursor: pointer;
+      text-decoration: none;
+      animation: logoPulse 3.6s ease-in-out infinite;
+    }
+    .logo-mark:hover { transform: translateY(-3px) scale(1.03); }
+    @keyframes logoPulse {
+      0% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-3px) scale(1.02); }
+      100% { transform: translateY(0) scale(1); }
+    }
+    @media (max-width: 640px) { .site-logo { left: 12px; top: 12px; } .logo-mark { font-size: 1.4rem; padding: 6px 10px; } }
+
+    /* ── Loader ── */
+    #loader {
+      position: fixed; inset: 0;
+      background: var(--dark); z-index: 8000;
+      display: flex; align-items: center; justify-content: center; flex-direction: column;
+      transition: opacity 0.9s ease, transform 1s ease;
+    }
+    #loader.out { opacity: 0; transform: translateY(-100%); pointer-events: none; }
+    .load-name {
+      font-family: 'Cormorant Garamond', serif;
+      color: var(--cream); font-size: clamp(2.2rem, 6vw, 4rem);
+      font-weight: 300; letter-spacing: 0.5em;
+      animation: fadeIn 0.6s ease 0.2s both;
+    }
+    .load-bar-wrap {
+      width: 200px; height: 1px; background: rgba(200,184,154,0.2);
+      margin-top: 24px; overflow: hidden;
+    }
+    .load-bar {
+      height: 100%; width: 0; background: var(--warm);
+      transition: width 1.6s cubic-bezier(0.4,0,0.2,1);
+    }
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+      padding: 1.6rem 2.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+      mix-blend-mode: multiply;
+    }
+    nav a {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.68rem; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--dark); text-decoration: none;
+      transition: opacity 0.3s, color 0.3s;
+    }
+    nav a:hover { opacity: 0.45; }
+    nav .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem; font-weight: 300; letter-spacing: 0.15em;
+      text-transform: none;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center; flex-direction: column;
+      text-align: center; padding: 8rem 2rem 5rem;
+      position: relative; overflow: hidden;
+    }
+    .hero-eyebrow {
+      font-size: 0.62rem; letter-spacing: 0.45em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 1.5rem;
+      opacity: 0; transform: translateY(16px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .hero-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3.5rem, 11vw, 8rem);
+      font-weight: 300; color: var(--dark);
+      letter-spacing: -0.02em; line-height: 0.95;
+      opacity: 0; transform: translateY(30px);
+      transition: opacity 1s ease, transform 1s ease;
+    }
+    .hero-name em { font-style: italic; color: var(--accent); }
+    .hero-sub {
+      font-size: 0.62rem; letter-spacing: 0.2em; text-transform: none;
+      color: var(--muted); margin-top: 1.4rem;
+      opacity: 0; transform: translateY(16px);
+      transition: opacity 0.8s ease 0.2s, transform 0.8s ease 0.2s;
+    }
+    .hero-line {
+      width: 1px; height: 70px;
+      background: linear-gradient(to bottom, transparent, var(--warm), transparent);
+      margin: 2.8rem auto 0;
+      opacity: 0; transform: scaleY(0); transform-origin: top;
+      transition: opacity 0.8s ease 0.4s, transform 0.8s ease 0.4s;
+    }
+
+    /* floating orbs behind hero */
+    .hero-orb {
+      position: absolute; border-radius: 50%;
+      pointer-events: none; z-index: -1;
+      filter: blur(70px); opacity: 0.18;
+      animation: orbFloat 8s ease-in-out infinite alternate;
+    }
+    .hero-orb-1 { width: 500px; height: 500px; background: var(--warm); top: -100px; left: -150px; animation-delay: 0s; }
+    .hero-orb-2 { width: 350px; height: 350px; background: var(--accent); bottom: 0; right: -80px; animation-delay: -3s; }
+    @keyframes orbFloat {
+      from { transform: translate(0,0) scale(1); }
+      to   { transform: translate(30px,20px) scale(1.08); }
+    }
+
+    /* ── Section Label ── */
+    .sec-label {
+      font-size: 0.62rem; letter-spacing: 0.4em; text-transform: uppercase;
+      color: var(--muted); text-align: center; margin-bottom: 2.4rem;
+    }
+
+    /* ── Stats ── */
+    .stats {
+      display: flex; justify-content: center; gap: clamp(2rem,6vw,5rem);
+      padding: 3.5rem 2rem; text-align: center;
+    }
+    .stat-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 5vw, 3rem); font-weight: 300; color: var(--dark);
+      line-height: 1;
+    }
+    .stat-lbl {
+      font-size: 0.58rem; letter-spacing: 0.32em; text-transform: uppercase;
+      color: var(--muted); margin-top: 0.45rem;
+    }
+
+    /* ── Gallery ── */
+    #gallery { padding: 3rem 1.5rem 4rem; }
+    .media-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px; max-width: 1080px; margin: 0 auto;
+    }
+    .media-card {
+      position: relative; overflow: hidden;
+      aspect-ratio: 4/5; background: var(--sand);
+    }
+    .media-card.span2 { grid-column: auto; aspect-ratio: 4/5; }
+    .media-card img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      filter: sepia(12%) contrast(97%) brightness(98%) saturate(88%);
+      transition: transform 0.8s cubic-bezier(0.25,0.46,0.45,0.94), filter 0.5s;
+      will-change: transform;
+    }
+    .media-card:hover img {
+      transform: scale(1.07);
+      filter: sepia(0%) contrast(102%) brightness(101%) saturate(100%);
+    }
+    .media-card.blur img {
+      filter: blur(7px) brightness(0.92) saturate(82%);
+      transform: scale(1.03);
+    }
+    .media-card .lbl {
+      position: absolute; left: 0.8rem; bottom: 0.8rem;
+      padding: 0.3rem 0.55rem;
+      background: rgba(42,36,32,0.65); backdrop-filter: blur(4px);
+      color: #f5f0e8; font-size: 0.53rem; letter-spacing: 0.22em; text-transform: uppercase;
+      opacity: 0; transform: translateY(6px);
+      transition: opacity 0.4s, transform 0.4s;
+      pointer-events: none;
+    }
+    .media-card:hover .lbl { opacity: 1; transform: translateY(0); }
+    /* subtle shine sweep */
+    .media-card::after {
+      content:''; position:absolute; inset:0;
+      background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.06) 50%, transparent 70%);
+      transform: translateX(-100%); transition: transform 0.7s ease;
+    }
+    .media-card:hover::after { transform: translateX(100%); }
+
+    /* ── Video Strip ── */
+    .video-section { padding: 3rem 0; overflow: hidden; }
+    .video-strip {
+      display: flex; gap: 10px; width: max-content;
+      animation: scrollX 12s linear infinite;
+      padding: 0 1rem;
+      transition: animation-play-state 0.3s ease;
+    }
+    .video-strip.paused { animation-play-state: paused; }
+    .video-item {
+      width: clamp(200px, 28vw, 320px);
+      aspect-ratio: 9/16; flex-shrink: 0;
+      overflow: hidden; background: var(--dark);
+      position: relative;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .video-item:active { transform: scale(0.98); }
+    .video-item video {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      /* performance: decode on GPU */
+      will-change: transform;
+    }
+    .video-item::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(42,36,32,0.3), transparent 40%);
+      pointer-events: none;
+    }
+    @keyframes scrollX { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+    /* ── Video grid + modal (replacement for strip) ── */
+    .video-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px; max-width:1080px; margin: 0 auto; padding: 1rem 1.5rem; }
+    .video-thumb { position:relative; background:#000; height: 320px; display:flex; align-items:center; justify-content:center; color:#fff; cursor:pointer; border-radius:4px; overflow:hidden; }
+    .video-thumb .label { position:absolute; bottom:8px; left:8px; background:rgba(0,0,0,0.45); padding:6px 8px; font-size:0.75rem; border-radius:3px; }
+    .video-thumb::before { content:'▶'; font-size:2.2rem; opacity:0.95; }
+    .video-modal { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.85); z-index:10000; opacity:0; pointer-events:none; transition:opacity 0.2s ease; }
+    .video-modal.open { opacity:1; pointer-events:auto; }
+    .video-modal-inner { width:clamp(320px,80vw,900px); max-height:90vh; background:#000; position:relative; border-radius:6px; overflow:hidden; }
+    .video-modal video { width:100%; height:100%; display:block; background:#000; }
+    .modal-close { position:absolute; top:8px; right:8px; background:transparent; color:#fff; border:none; font-size:1.6rem; cursor:pointer; z-index:1; }
+    /* ── Marquee / auto-scroll strip ── */
+    .video-marquee { overflow: hidden; padding: 0 0.8rem; }
+    .marquee-inner { display:flex; width: max-content; align-items:stretch; }
+    .video-marquee .marquee-inner { gap: 10px; }
+    .marquee-inner { touch-action: pan-y; cursor: grab; }
+    .marquee-inner.dragging { cursor: grabbing; }
+    .marquee-inner.paused { animation-play-state: paused !important; }
+    .marquee-inner .video-item { width: clamp(180px, 22vw, 320px); aspect-ratio: 9/16; flex: 0 0 auto; border-radius:4px; overflow:hidden; background:#000; border: 2px solid rgba(0,0,0,0.05); box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
+    .marquee-inner video { width:100%; height:100%; object-fit:cover; display:block; }
+    @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+    .video-item.is-paused {
+      outline: 1px solid rgba(139,111,71,0.22);
+      outline-offset: -1px;
+    }
+
+    /* ── About ── */
+    .about {
+      max-width: 620px; margin: 0 auto;
+      padding: 5rem 2rem; text-align: center;
+    }
+    .about h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 5.5vw, 3.4rem); font-weight: 300; color: var(--dark);
+      line-height: 1.1; margin-bottom: 1.6rem;
+    }
+    .about p { font-size: 0.87rem; color: #6a5c52; line-height: 2; }
+    .about p + p { margin-top: 1rem; }
+
+    /* ── Footer ── */
+    footer {
+      margin-top: 2rem;
+      padding: 1rem 1.25rem;
+      border-top: 1px solid #e0d4c8;
+      background: rgba(245,240,232,0.78);
+      backdrop-filter: blur(10px);
+    }
+    .footer-bar {
+      max-width: 1080px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    footer .f-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem; font-weight: 300; color: var(--dark);
+      text-transform: none; letter-spacing: 0.02em;
+    }
+    .footer-meta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    footer p {
+      font-size: 0.58rem;
+      letter-spacing: 0.18em;
+      color: #b8a898;
+    }
+    .footer-links {
+      display: flex;
+      gap: 0.85rem;
+      flex-wrap: wrap;
+    }
+    .footer-links a {
+      color: var(--dark);
+      text-decoration: none;
+      font-size: 0.58rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      opacity: 0.72;
+    }
+    .footer-links a:hover { opacity: 1; }
+
+    @media (max-width: 640px) {
+      footer {
+        padding: 0.95rem 1rem calc(0.95rem + env(safe-area-inset-bottom, 0px));
+      }
+      .footer-bar {
+        align-items: flex-start;
+        justify-content: center;
+      }
+      .footer-meta {
+        width: 100%;
+        justify-content: center;
+      }
+      footer p { letter-spacing: 0.14em; }
+    }
+
+    /* ── Reveal Animations ── */
+    .reveal {
+      opacity: 0; transform: translateY(36px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+    .reveal.in { opacity: 1; transform: none; }
+    .reveal-s { transition-delay: 0.1s; }
+    .reveal-m { transition-delay: 0.2s; }
+    .reveal-l { transition-delay: 0.3s; }
+
+    /* ── Marquee text ── */
+    .marquee-row { overflow: hidden; padding: 1.5rem 0; border-top: 1px solid var(--sand); border-bottom: 1px solid var(--sand); margin: 2rem 0; }
+    .marquee-inner {
+      display: flex; gap: 2.5rem; width: max-content;
+      animation: scrollX 18s linear infinite;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1rem, 2.5vw, 1.3rem); font-weight: 300;
+      color: var(--muted); letter-spacing: 0.12em;
+      white-space: nowrap;
+    }
+    .marquee-dot { color: var(--accent); }
+
+    /* ── Hamburger Menu ── */
+    #hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      background: none; border: none; cursor: pointer;
+      padding: 0; width: 28px; height: 24px;
+      z-index: 501;
+    }
+    .ham-line {
+      width: 100%; height: 2px; background: var(--dark);
+      transition: all 0.3s ease; transform-origin: center;
+    }
+    #hamburger.active .ham-line:nth-child(1) { transform: rotate(45deg) translateY(11px); }
+    #hamburger.active .ham-line:nth-child(2) { opacity: 0; }
+    #hamburger.active .ham-line:nth-child(3) { transform: rotate(-45deg) translateY(-11px); }
+    
+    #nav-menu {
+      display: flex; gap: 2rem; align-items: center;
+    }
+    #nav-menu.mobile {
+      position: fixed; top: 0; right: 0; left: auto;
+      width: min(80vw, 320px); height: 100vh;
+      flex-direction: column; align-items: flex-start; gap: 1rem;
+      padding: 5.5rem 1.5rem 2rem;
+      background: #ffffff; border-left: 1px solid var(--sand);
+      z-index: 499;
+      transform: translateX(100%);
+      transition: transform 0.32s ease, opacity 0.28s ease;
+      box-shadow: -18px 0 30px rgba(0,0,0,0.08);
+    }
+    #nav-menu.mobile.active { transform: translateX(0); }
+    .mobile-nav-head {
+      display: none;
+      width: 100%;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 1rem;
+      margin-bottom: 0.5rem;
+      border-bottom: 1px solid var(--sand);
+    }
+    .mobile-nav-brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem;
+      font-weight: 300;
+      letter-spacing: 0.12em;
+      color: var(--dark);
+      text-decoration: none;
+    }
+    #nav-menu.mobile .nav-close {
+      display: none;
+      align-self: flex-end;
+      margin-bottom: 0.5rem;
+      background: none;
+      border: none;
+      color: var(--dark);
+      font-size: 1.9rem;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .media-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 6px; }
+      .media-card { aspect-ratio: 4/5; }
+      nav { padding: 1.1rem 1.4rem; }
+      nav { justify-content: space-between; }
+      #hamburger { display: flex; }
+      #nav-menu {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: min(84vw, 330px);
+        height: 100vh;
+        padding: 1.25rem 1.25rem 2rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.35rem;
+        background: #ffffff;
+        border-left: 1px solid var(--sand);
+        box-shadow: -18px 0 30px rgba(0,0,0,0.08);
+        transform: translateX(100%);
+        opacity: 0;
+        pointer-events: none;
+        transition: transform 0.32s ease, opacity 0.28s ease;
+        z-index: 499;
+      }
+      #nav-menu.mobile { text-align: left; }
+      #nav-menu.mobile .mobile-nav-head { display: flex; }
+      #nav-menu.mobile.active {
+        transform: translateX(0);
+        opacity: 1;
+        pointer-events: auto;
+      }
+      #nav-menu.mobile a { font-size: 0.98rem; width: 100%; padding: 0.7rem 0; letter-spacing: 0.18em; }
+      #nav-menu.mobile .nav-logo { display: none; }
+      #nav-menu.mobile .nav-close { display: block; align-self: center; margin: 0; }
+      .stats { gap: 1.5rem; }
+
+      /* Bottom bar visible on mobile */
+      .bottom-bar {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        width: min(92vw, 420px);
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
+        bottom: calc(0.65rem + env(safe-area-inset-bottom, 0px));
+        border-radius: 999px;
+      }
+      body { padding-bottom: calc(92px + env(safe-area-inset-bottom, 0px)); }
+    }
+
+    /* Bottom bar (default hidden, shown on mobile) */
+    .bottom-bar {
+      display: none; position: fixed; left: 0; right: 0; bottom: 0;
+      justify-content: space-around; align-items: center;
+      gap: 8px; padding: 0.55rem 0.75rem calc(0.55rem + env(safe-area-inset-bottom, 0px)); z-index: 600;
+      background: rgba(245,240,232,0.94); border-top: 1px solid var(--sand);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 -8px 24px rgba(0,0,0,0.05);
+    }
+    .bottom-bar a {
+      display: flex; align-items: center; justify-content: center;
+      min-height: 42px; padding: 0.45rem 0.2rem;
+      color: var(--dark); text-decoration: none;
+      font-size: 0.56rem; letter-spacing: 0.22em; text-transform: uppercase;
+      border: 1px solid rgba(139,111,71,0.16);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.34);
+    }
+    .bottom-bar a:active { transform: scale(0.98); }
+
+    @media (min-width: 641px) {
+      .bottom-bar { display: none !important; }
+    }
+
+    /* Nav backdrop to dim page when mobile menu is open */
+    #nav-backdrop {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.28);
+      opacity: 0; pointer-events: none; transition: opacity 0.28s ease;
+      z-index: 498;
+    }
+    #nav-backdrop.active { opacity: 1; pointer-events: auto; }
+
+    /* Logo mark defined earlier with animated styles */
+    /* Mobile: centered navbar, no hamburger */
+    @media (max-width: 640px) {
+      #nav-backdrop { display: none; }
+      #hamburger { display: none !important; }
+      nav {
+        justify-content: center;
+        padding: 0.9rem 0.75rem;
+      }
+      #nav-menu {
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: auto;
+        padding: 1rem 0.75rem;
+        background: #ffffff;
+        border-left: none;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+        transform: none;
+        opacity: 1;
+        pointer-events: auto;
+        flex-direction: row;
+        gap: 1.1rem;
+        display: flex;
+      }
+      #nav-menu a {
+        display: inline-flex;
+        width: auto;
+        padding: 0.35rem 0.15rem;
+        font-size: 0.78rem;
+        letter-spacing: 0.18em;
+      }
+      #nav-menu .mobile-nav-head,
+      #nav-menu .nav-close {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div id="nav-menu">
+      <a href="#home">Home</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#videos">Videos</a>
+    </div>
+    <button id="hamburger" aria-label="Open menu" aria-expanded="false">
+      <span class="ham-line"></span>
+      <span class="ham-line"></span>
+      <span class="ham-line"></span>
+    </button>
+  </nav>
+  <div id="nav-backdrop"></div>
+
+  <!-- Cursor -->
+  <div id="cursor"></div>
+  <div id="cursor-ring"></div>
+
+  <!-- Loader -->
+  <div id="loader">
+    <div class="load-name">Aryan Dobariya</div>
+    <div class="load-bar-wrap"><div class="load-bar" id="loadBar"></div></div>
+  </div>
+
+  
+
+  <!-- Hero -->
+  <section class="hero" id="home">
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+
+    
+    <h1 class="hero-name" id="h-name">Aryan <em>Dobariya</em></h1>
+    <p class="hero-sub" id="h-sub">@aryann._.09</p>
+    <div class="hero-line" id="h-line"></div>
+  </section>
+
+  <!-- Marquee -->
+  <div class="marquee-row reveal">
+    <div class="marquee-inner">
+      <span>Photography</span><span class="marquee-dot">✦</span>
+      <span>Portrait</span><span class="marquee-dot">✦</span>
+      <span>Golden Hour</span><span class="marquee-dot">✦</span>
+      <span>Film</span><span class="marquee-dot">✦</span>
+      <span>Editorial</span><span class="marquee-dot">✦</span>
+      <span>Visual Storytelling</span><span class="marquee-dot">✦</span>
+      <span>Moments</span><span class="marquee-dot">✦</span>
+      <!-- duplicate for seamless loop -->
+      <span>Photography</span><span class="marquee-dot">✦</span>
+      <span>Portrait</span><span class="marquee-dot">✦</span>
+      <span>Golden Hour</span><span class="marquee-dot">✦</span>
+      <span>Film</span><span class="marquee-dot">✦</span>
+      <span>Editorial</span><span class="marquee-dot">✦</span>
+      <span>Visual Storytelling</span><span class="marquee-dot">✦</span>
+      <span>Moments</span><span class="marquee-dot">✦</span>
+    </div>
+  </div>
+
+  <!-- Gallery -->
+  <section id="gallery" style="padding: 4rem 1.5rem 3rem;">
+    <p class="sec-label reveal">— gallery —</p>
+    <div class="media-grid">
+      <div class="media-card span2 reveal"><img src="https://res.cloudinary.com/djaso22p1/image/upload/v1778933527/1_skanhh.jpg" alt="Portrait 1" loading="eager"><span class="lbl">Portrait</span></div>
+      
+
+      <div class="media-card reveal"><img src="https://res.cloudinary.com/djaso22p1/image/upload/v1778933528/WhatsApp_Image_2026-05-14_at_8.15.25_PM_2_npklvb.jpg" alt="Portrait 3" loading="lazy"><span class="lbl">Portrait</span></div>
+      <div class="media-card reveal"><img src="https://res.cloudinary.com/djaso22p1/image/upload/v1778933527/WhatsApp_Image_2026-05-14_at_8.15.25_PM_5_lxwtwo.jpg" alt="Portrait 6" loading="lazy"><span class="lbl">Portrait</span></div>
+       <div class="media-card reveal reveal-m"><img src="https://res.cloudinary.com/djaso22p1/image/upload/v1778933528/WhatsApp_Image_2026-05-14_at_8.15.25_PM_4_dtaoke.jpg" alt="Portrait 5" loading="lazy"><span class="lbl">Portrait</span></div>
+      <div class="media-card span2 reveal reveal-s"><img src="https://res.cloudinary.com/djaso22p1/image/upload/v1778933529/WhatsApp_Image_2026-05-14_at_8.15.25_PM_8_oan4ti.jpg" alt="Portrait 7" loading="lazy"><span class="lbl">Portrait</span></div>
+      <div class="media-card span2 reveal"><img src="https://res.cloudinary.com/djaso22p1/image/upload/v1778933529/WhatsApp_Image_2026-05-14_at_8.15.25_PM_9_sv0peb.jpg" alt="Portrait 10" loading="lazy"><span class="lbl">Portrait</span></div>
+      <div class="media-card reveal reveal-s"><img src="https://res.cloudinary.com/djaso22p1/image/upload/v1778933527/WhatsApp_Image_2026-05-14_at_8.15.25_PM_3_tok7zj.jpg" alt="Portrait 4" loading="lazy"><span class="lbl">Portrait</span></div>
+      <div class="media-card reveal reveal-s"><img src="https://res.cloudinary.com/djaso22p1/image/upload/v1778933528/WhatsApp_Image_2026-05-14_at_8.15.25_PM_12_xmvoay.jpg" alt="Portrait 12" loading="lazy"><span class="lbl">Portrait</span></div>
+      <div class="media-card reveal reveal-s"><img src="https://res.cloudinary.com/djaso22p1/image/upload/v1778933530/WhatsApp_Image_2026-05-14_at_8.15.25_PM_dqay1w.jpg" alt="Portrait 2" loading="lazy"><span class="lbl">Portrait</span></div>
+      <div class="media-card reveal"><img src="https://res.cloudinary.com/djaso22p1/image/upload/v1778933529/WhatsApp_Image_2026-05-14_at_8.15.25_PM_13_rytv6c.jpg" alt="Portrait 13" loading="lazy"><span class="lbl">Portrait</span></div>
+      <div class="media-card span2 reveal reveal-s"><img src="https://res.cloudinary.com/djaso22p1/image/upload/v1778933531/WhatsApp_Image_2026-05-14_at_8.17.33_PM_ldz7pk.jpg" alt="Portrait 14" loading="lazy"><span class="lbl">Portrait</span></div>
+      <div class="media-card span2 reveal reveal-s"><img src="https://res.cloudinary.com/djaso22p1/image/upload/v1778933526/secondimg_hq8yai.jpg" alt="Portrait 14" loading="lazy"><span class="lbl">Portrait</span></div>
+    </div>
+  </section>
+
+  <!-- Videos (replaced strip with thumbnail grid + modal) -->
+  <section class="video-section" id="videos">
+    <p class="sec-label reveal">— videos —</p>
+    <div class="video-marquee" id="videoMarquee" style="--marquee-duration:30s;">
+      <div class="marquee-inner" id="marqueeInner">
+        <div class="video-item"><video muted playsinline autoplay loop preload="metadata" src="https://res.cloudinary.com/djaso22p1/video/upload/v1778932816/1_pmphpg.mp4"></video></div>
+         <div class="video-item"><video muted playsinline autoplay loop preload="metadata" src="https://res.cloudinary.com/djaso22p1/video/upload/v1778932798/instagram_1778858991405_720p_zuiwul.mp4"></video></div>
+
+        <div class="video-item"><video muted playsinline autoplay loop preload="metadata" src="https://res.cloudinary.com/djaso22p1/video/upload/v1778932809/WhatsApp_Video_2026-05-14_at_8.32.24_PM_ucbani.mp4"></video></div>
+          <div class="video-item"><video muted playsinline autoplay loop preload="metadata" src="https://res.cloudinary.com/djaso22p1/video/upload/v1778932761/instagram__1778859006718_b6duzp.mp4"></video></div>
+        <div class="video-item"><video muted playsinline autoplay loop preload="metadata" src="https://res.cloudinary.com/djaso22p1/video/upload/v1778932807/WhatsApp_Video_2026-05-14_at_8.34.04_PM_znnv11.mp4"></video></div>
+        <div class="video-item"><video muted playsinline autoplay loop preload="metadata" src="https://res.cloudinary.com/djaso22p1/video/upload/v1778932803/instagram_1778858929100_720p_l4gih8.mp4"></video></div>
+       
+      
+        <div class="video-item"><video muted playsinline autoplay loop preload="metadata" src="https://res.cloudinary.com/djaso22p1/video/upload/v1778932782/VID-20260129-WA0004_ndpv3a.mp4"></video></div>
+         <div class="video-item"><video muted playsinline autoplay loop preload="metadata" src="https://res.cloudinary.com/djaso22p1/video/upload/v1778932798/instagram_1778858991405_720p_zuiwul.mp4"></video></div>
+        <div class="video-item"><video muted playsinline autoplay loop preload="metadata" src="https://res.cloudinary.com/djaso22p1/video/upload/v1778932771/instagram_1778858973945_480p_bvtf6v.mp4"></video></div>
+        <div class="video-item"><video muted playsinline autoplay loop preload="metadata" src="https://res.cloudinary.com/djaso22p1/video/upload/v1778932788/instagram_1778859107225_720p_cuxdkc.mp4"></video></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bottom bar (mobile) -->
+  <div class="bottom-bar" role="navigation" aria-label="Quick links">
+    <a href="#home">Home</a>
+    <a href="#gallery">Gallery</a>
+    <a href="#videos">Videos</a>
+    <a href="#home">Top</a>
+  </div>
+
+  <!-- About -->
+  <section id="about" class="about">
+    <p class="sec-label reveal">—  —</p>
+    <p class="reveal">Ｄʀᴇᴀᴍ big. Create boldly. Ship it.</p>
+    <p class="reveal reveal-m">"The only way to do great work is to love what you do."</p>
+    <p class="reveal reveal-m">Your vision has no limits. Your ambition is your only boundary.</p>
+    <p class="reveal reveal-m">Innovation happens at the intersection of creativity and technology.</p>
+    <p class="reveal reveal-l">"Every great journey begins with a single frame, a single line of code, a single moment of courage."</p>
+    <p class="reveal reveal-l">Build the future. Dream bigger. Never stop creating.</p>
+    <p class="reveal reveal-l"><strong>Log Kya Sochenge Kabhi Fursat Mili to Sochunga...</strong> 🥱</p>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-bar">
+      <div class="f-name">Aryan Dobariya</div>
+      <div class="footer-meta">
+        <div class="footer-links">
+          <a href="#home">Top</a>
+          <a href="#gallery">Gallery</a>
+          <a href="#videos">Videos</a>
+        </div>
+        <p>© 2026 &nbsp;·&nbsp; All rights reserved &nbsp;·&nbsp; made with Aryan</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    /* ── Cursor ── */
+    const cur = document.getElementById('cursor');
+    const ring = document.getElementById('cursor-ring');
+    let mx=0, my=0, rx=0, ry=0;
+
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cur.style.left = mx+'px'; cur.style.top = my+'px';
+    });
+
+    (function raf() {
+      rx += (mx-rx)*0.12; ry += (my-ry)*0.12;
+      ring.style.left = rx+'px'; ring.style.top = ry+'px';
+      requestAnimationFrame(raf);
+    })();
+
+    document.querySelectorAll('a, button, .media-card, .video-item').forEach(el => {
+      el.addEventListener('mouseenter', () => { ring.classList.add('hover'); cur.classList.add('hover'); });
+      el.addEventListener('mouseleave', () => { ring.classList.remove('hover'); cur.classList.remove('hover'); });
+    });
+
+    /* ── Image click blur ── */
+    document.querySelectorAll('.media-card').forEach(card => {
+      card.addEventListener('click', () => {
+        card.classList.add('blur');
+        clearTimeout(card._blurTimer);
+        card._blurTimer = setTimeout(() => {
+          card.classList.remove('blur');
+        }, 900);
+      });
+    });
+
+    /* ── Loader ── */
+    const bar = document.getElementById('loadBar');
+    bar.style.width = '100%'; // trigger transition immediately
+
+    function hideLoader() {
+      const loader = document.getElementById('loader');
+      loader.classList.add('out');
+      setTimeout(() => { loader.style.display = 'none'; }, 1000);
+      showHero();
+    }
+
+    if (document.readyState === 'complete') {
+      setTimeout(hideLoader, 1800);
+    } else {
+      window.addEventListener('load', () => setTimeout(hideLoader, 1800));
+      // Failsafe
+      setTimeout(hideLoader, 3500);
+    }
+
+    /* ── Hero entrance ── */
+    function showHero() {
+      const eye = document.getElementById('h-eye');
+      const nm  = document.getElementById('h-name');
+      const sub = document.getElementById('h-sub');
+      const ln  = document.getElementById('h-line');
+
+      function reveal(el, delay) {
+        setTimeout(() => {
+          el.style.opacity = '1';
+          el.style.transform = 'none';
+        }, delay);
+      }
+
+      reveal(eye, 100);
+      reveal(nm, 260);
+      reveal(sub, 440);
+      reveal(ln, 620);
+      setTimeout(countStats, 700);
+    }
+
+    /* ── Counter ── */
+    function countUp(id, target, suffix='') {[]
+      const el = document.getElementById(id);
+      let cur = 0;
+      const step = target / 55;
+      const t = setInterval(() => {
+        cur = Math.min(cur + step, target);
+        el.textContent = Math.floor(cur).toLocaleString() + suffix;
+        if (cur >= target) clearInterval(t);
+      }, 22);
+    }
+    function countStats() {
+      countUp('s1', 15);
+      countUp('s2', 3);
+      countUp('s3', 18);
+    }
+
+    /* ── Scroll Reveal ── */
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.08 });
+
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+    /* ── Auto-scrolling marquee for videos (click to toggle pause/resume) ── */
+    const marquee = document.getElementById('videoMarquee');
+    const marqueeInner = document.getElementById('marqueeInner');
+    if (marqueeInner) {
+      // duplicate content for seamless loop
+      marqueeInner.innerHTML = marqueeInner.innerHTML + marqueeInner.innerHTML;
+      const duration = getComputedStyle(marquee).getPropertyValue('--marquee-duration').trim() || '30s';
+      marqueeInner.style.animation = `marquee ${duration} linear infinite`;
+      // ensure videos are muted and silent
+      marqueeInner.querySelectorAll('video').forEach(v => { try { v.muted = true; v.volume = 0; v.play().catch(()=>{}); } catch(e){} });
+
+        function setMarqueePaused(paused) {
+          marqueeInner.classList.toggle('paused', paused);
+          marqueeInner.querySelectorAll('.video-item').forEach(item => item.classList.toggle('is-paused', paused));
+          marqueeInner.querySelectorAll('video').forEach(v => {
+            if (paused) {
+              v.pause();
+            } else {
+              v.play().catch(()=>{});
+            }
+          });
+        }
+
+        function toggleMarqueePaused() {
+          setMarqueePaused(!marqueeInner.classList.contains('paused'));
+        }
+
+      // Pointer / touch drag support (finger scrolling)
+      (function enableMarqueeDrag() {
+        let isDown = false;
+        let startX = 0;
+        let startOffset = 0;
+        let prevX = 0;
+        let prevT = 0;
+        let velocity = 0; // px per ms
+        let rafId = null;
+        let currentOffset = 0;
+
+        marqueeInner.style.willChange = 'transform';
+
+        function stopInertia() {
+          if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+        }
+
+        marqueeInner.addEventListener('pointerdown', (ev) => {
+          stopInertia();
+          isDown = true;
+          startX = ev.clientX;
+          prevX = ev.clientX;
+          prevT = performance.now();
+          startOffset = currentOffset;
+          velocity = 0;
+          try { marqueeInner.setPointerCapture(ev.pointerId); } catch(e){}
+          // pause animation and videos while interacting
+          setMarqueePaused(true);
+          marqueeInner.classList.add('dragging');
+        }, { passive: true });
+
+        marqueeInner.addEventListener('pointermove', (ev) => {
+          if (!isDown) return;
+          const now = performance.now();
+          const dx = ev.clientX - prevX;
+          const dt = Math.max(1, now - prevT);
+          velocity = dx / dt; // px per ms
+          prevX = ev.clientX; prevT = now;
+
+          const delta = ev.clientX - startX;
+          const applied = startOffset + delta;
+          marqueeInner.style.transform = `translateX(${applied}px)`;
+        }, { passive: true });
+
+        // wheel / trackpad horizontal support for laptops
+        let wheelTimer = null;
+        marqueeInner.addEventListener('wheel', (ev) => {
+          // allow horizontal control via vertical scroll on the marquee
+          ev.preventDefault();
+          stopInertia();
+          marqueeInner.classList.add('paused', 'dragging');
+          // treat wheel delta as velocity impulse
+          velocity = -ev.deltaY * 0.02; // tuned multiplier
+          // compute currentOffset from transform
+          const style = window.getComputedStyle(marqueeInner);
+          const m = style.transform.match(/matrix\(([^)]+)\)/);
+          if (m) {
+            const vals = m[1].split(',');
+            currentOffset = parseFloat(vals[4]) || 0;
+          } else {
+            currentOffset = 0;
+          }
+          currentOffset += -ev.deltaY * 0.5;
+          marqueeInner.style.transform = `translateX(${currentOffset}px)`;
+          clearTimeout(wheelTimer);
+          wheelTimer = setTimeout(() => {
+            // start inertia from the current velocity
+            if (Math.abs(velocity) > 0.02) startInertia();
+            else {
+              marqueeInner.style.transform = '';
+              marqueeInner.classList.remove('dragging');
+              setMarqueePaused(false);
+            }
+          }, 120);
+        }, { passive: false });
+
+        function startInertia() {
+          const friction = 0.0009; // larger = quicker slow-down
+          let last = performance.now();
+
+          function step() {
+            const now = performance.now();
+            const dt = now - last; last = now;
+            // apply exponential decay to velocity
+            const v = velocity;
+            // integrate
+            currentOffset += v * dt;
+            // decay velocity
+            velocity *= Math.exp(-friction * dt);
+
+            marqueeInner.style.transform = `translateX(${currentOffset}px)`;
+
+            if (Math.abs(velocity) > 0.02) {
+              rafId = requestAnimationFrame(step);
+            } else {
+              stopInertia();
+              // clear transform and resume CSS animation/videos
+              marqueeInner.style.transform = '';
+              marqueeInner.classList.remove('paused', 'dragging');
+              marqueeInner.querySelectorAll('video').forEach(v => v.play().catch(()=>{}));
+            }
+          }
+          rafId = requestAnimationFrame(step);
+        }
+
+        function release(ev) {
+          if (!isDown) return;
+          isDown = false;
+          try { marqueeInner.releasePointerCapture(ev.pointerId); } catch(e){}
+          marqueeInner.classList.remove('dragging');
+          // set currentOffset from computed transform if any
+          const style = window.getComputedStyle(marqueeInner);
+          const m = style.transform.match(/matrix\(([^)]+)\)/);
+          if (m) {
+            const vals = m[1].split(',');
+            currentOffset = parseFloat(vals[4]);
+          } else {
+            currentOffset = 0;
+          }
+
+          // if flick velocity is significant, continue with inertia
+          if (Math.abs(velocity) > 0.06) {
+            startInertia();
+          } else {
+            // otherwise just reset and resume
+            marqueeInner.style.transform = '';
+            setMarqueePaused(false);
+          }
+        }
+
+        marqueeInner.addEventListener('pointerup', release);
+        marqueeInner.addEventListener('pointercancel', release);
+        window.addEventListener('pointerleave', () => { if (isDown) { isDown = false; marqueeInner.classList.remove('dragging'); marqueeInner.style.transform = ''; setMarqueePaused(false); } });
+      })();
+    }
+
+    /* ── Parallax hero ── */
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const hero = document.querySelector('.hero');
+          if (hero) hero.style.transform = `translateY(${window.pageYOffset * 0.28}px)`;
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }, { passive: true });
+
+    /* ── Smooth nav scroll ── */
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const t = document.querySelector(a.getAttribute('href'));
+        if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth' }); }
+      });
+    });
+
+    /* ── Hamburger toggle ── */
+    const hamburger = document.getElementById('hamburger');
+    const navMenu = document.getElementById('nav-menu');
+    const navBackdrop = document.getElementById('nav-backdrop');
+    const navClose = document.getElementById('navClose');
+    function closeMobileMenu() {
+      if (!navMenu) return;
+      navMenu.classList.remove('mobile', 'active');
+      hamburger && hamburger.classList.remove('active');
+      navBackdrop && navBackdrop.classList.remove('active');
+      document.body.style.overflow = '';
+      hamburger && hamburger.setAttribute('aria-expanded', 'false');
+    }
+    if (hamburger) hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('active');
+      // toggle mobile classes
+      navMenu.classList.toggle('mobile');
+      navMenu.classList.toggle('active');
+      navBackdrop && navBackdrop.classList.toggle('active');
+      const open = navMenu.classList.contains('active');
+      document.body.style.overflow = open ? 'hidden' : '';
+      hamburger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    // close mobile menu when a link is clicked
+    navMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { closeMobileMenu(); }));
+    navClose && navClose.addEventListener('click', closeMobileMenu);
+    // close when backdrop clicked
+    navBackdrop && navBackdrop.addEventListener('click', closeMobileMenu);
+
+    /* ── Tap a video to pause/resume the scrolling strip ── */
+    document.querySelectorAll('.video-item').forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleMarqueePaused();
+      });
+    });
+
+  </script>
+</body>
+</html>
